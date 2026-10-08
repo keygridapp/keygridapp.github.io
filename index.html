@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Keygrid: BPM, key, reverb and delay for any beat</title>
-<meta name="description" content="Drag in a beat and get the BPM to four decimal places, the key, vocal reverb and delay times, and a beat health check. Free for Mac.">
+<meta name="description" content="Drag in a beat and get the BPM to four decimal places, the key, vocal reverb and delay times, and a beat health check. Free for Mac and Windows.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Keygrid">
-<meta property="og:description" content="Key, BPM, reverb and delay times, all in one drag and drop. Free for Mac.">
+<meta property="og:description" content="Key, BPM, reverb and delay times, all in one drag and drop. Free for Mac and Windows.">
 <link rel="canonical" href="https://keygridapp.github.io/">
 <meta property="og:url" content="https://keygridapp.github.io/">
 <meta property="og:image" content="https://keygridapp.github.io/img/social-preview.png">
@@ -86,6 +86,10 @@ p { margin: 0; }
 .secondary { display: inline-flex; align-items: center; color: var(--ink); text-decoration: none; font-weight: 500; font-size: 1.05rem; padding: 14px 26px; border-radius: 99px; border: 1px solid #4a3f6b; transition: border-color .2s, background .2s; }
 .secondary:hover { border-color: var(--lilac); background: rgba(179, 156, 255, 0.08); }
 .hero .meta { margin-top: 16px; color: var(--muted); font-size: 0.9rem; max-width: 40rem; }
+.os-switch { display: inline-flex; gap: 4px; padding: 4px; border-radius: 99px; background: var(--plum); border: 1px solid var(--line); }
+.os-switch button { font: inherit; font-size: 0.95rem; color: var(--muted); background: transparent; border: 0; border-radius: 99px; padding: 7px 18px; cursor: pointer; }
+.os-switch button[aria-selected="true"] { background: var(--lilac); color: #1b1330; font-weight: 600; }
+.steps[hidden] { display: none; }
 .shot-hero { margin-top: clamp(40px, 6vw, 72px); margin-inline: auto; width: min(980px, 100%); }
 .shot-hero img { margin-bottom: clamp(24px, 4vw, 56px); }
 
@@ -193,13 +197,13 @@ footer .fine { width: 100%; font-size: 0.82rem; color: #7d7598; max-width: 60rem
       <h1>Drag in a beat. Get everything.</h1>
       <p class="lede">The BPM to four decimal places, the key and its relative key, vocal reverb and delay times, and a health check on the beat. One drop, a few seconds.</p>
       <div class="cta">
-        <a class="button" data-download href="https://github.com/ChrisCollins24/Keygrid/releases/latest">
+        <a class="button" data-download="primary" href="https://github.com/ChrisCollins24/Keygrid/releases/latest">
           <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Download for Mac
+          <span data-os-label>Download for Mac</span>
         </a>
         <a class="secondary" href="app/">Try it in your browser</a>
       </div>
-      <p class="meta">Free. Mac app: <span data-version>latest version</span>, Apple Silicon and Intel, macOS 11 or newer. Browser version: Chrome, Edge, Safari or Firefox on Mac and Windows.</p>
+      <p class="meta">Free for Mac and Windows<span data-version-suffix></span>. <a data-download="other" href="https://github.com/ChrisCollins24/Keygrid/releases/latest">Download for Windows</a> instead.</p>
       <div class="shot-hero">
         <img src="img/hero.webp" width="1290" height="1264" alt="Keygrid showing a beat at 142.0004 BPM in F minor, with its relative key A♭ major and the F minor scale lit up on a piano" fetchpriority="high">
       </div>
@@ -292,17 +296,28 @@ footer .fine { width: 100%; font-size: 0.82rem; color: #7d7598; max-width: 60rem
     <div class="wrap">
       <div class="side">
         <h2>Up and running in a minute</h2>
-        <p>Keygrid is free and works on any Apple Silicon or Intel Mac running macOS 11 or newer. On Windows, or just want to try it first? <a href="app/">Use Keygrid in your browser</a>.</p>
-        <a class="button" data-download href="https://github.com/ChrisCollins24/Keygrid/releases/latest">
+        <p>Keygrid is free. Want to try it before installing? <a href="app/">Use Keygrid in your browser</a>.</p>
+        <div class="os-switch" role="tablist" aria-label="Your computer">
+          <button type="button" role="tab" id="tab-mac" aria-controls="steps-mac" aria-selected="true" data-os="mac">Mac</button>
+          <button type="button" role="tab" id="tab-win" aria-controls="steps-win" aria-selected="false" data-os="win">Windows</button>
+        </div>
+        <a class="button" data-download="install" href="https://github.com/ChrisCollins24/Keygrid/releases/latest">
           <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Download for Mac
+          <span data-os-label>Download for Mac</span>
         </a>
       </div>
-      <ol class="steps">
-        <li><div><h3>Download</h3><p>Click Download for Mac and open the file once it finishes.</p></div></li>
-        <li><div><h3>Drag Keygrid into Applications</h3><p>The window that opens shows you where to drag it.</p></div></li>
-        <li><div><h3>Allow it the first time</h3><p>Open Keygrid once, then go to System Settings, Privacy &amp; Security, and click Open Anyway. After that it opens like any other app. <a data-help href="https://github.com/ChrisCollins24/Keygrid/wiki/Installing-and-Updating">Step-by-step help</a></p></div></li>
-      </ol>
+      <div>
+        <ol class="steps" id="steps-mac" role="tabpanel" aria-labelledby="tab-mac">
+          <li><div><h3>Download</h3><p>Works on Apple Silicon and Intel Macs running macOS 11 or newer. Open the file once it finishes.</p></div></li>
+          <li><div><h3>Drag Keygrid into Applications</h3><p>The window that opens shows you where to drag it.</p></div></li>
+          <li><div><h3>Allow it the first time</h3><p>Open Keygrid once, then go to System Settings, Privacy &amp; Security, and click Open Anyway. After that it opens like any other app. <a data-help href="https://github.com/ChrisCollins24/Keygrid/wiki/Installing-and-Updating">Step-by-step help</a></p></div></li>
+        </ol>
+        <ol class="steps" id="steps-win" role="tabpanel" aria-labelledby="tab-win" hidden>
+          <li><div><h3>Download</h3><p>Works on 64-bit Windows 10 and 11. Open the installer once it finishes.</p></div></li>
+          <li><div><h3>Allow it the first time</h3><p>If Windows shows "Windows protected your PC", click More info, then Run anyway.</p></div></li>
+          <li><div><h3>Install</h3><p>Follow the installer. Keygrid appears in your Start menu. <a data-help href="https://github.com/ChrisCollins24/Keygrid/wiki/Installing-and-Updating">Step-by-step help</a></p></div></li>
+        </ol>
+      </div>
     </div>
   </section>
 </main>
@@ -329,14 +344,43 @@ footer .fine { width: 100%; font-size: 0.82rem; color: #7d7598; max-width: 60rem
   document.querySelectorAll('[data-help]').forEach(a => a.href = a.href.replace(/https:\/\/github\.com\/[^/]+\/[^/]+/, GH));
   document.querySelectorAll('[data-repo-link]').forEach(a => a.href = GH + a.dataset.repoLink);
 
-  // Show the current version and link straight to the .dmg when GitHub answers.
+  // Offer the download that matches the visitor's computer, with the other one a click away.
+  const ua = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || navigator.userAgent;
+  const visitorOS = /win/i.test(ua) ? 'win' : 'mac';
+  const NAME = { mac: 'Mac', win: 'Windows' };
+  const links = { mac: GH + '/releases/latest', win: GH + '/releases/latest' };
+  let installOS = visitorOS;
+  function paint() {
+    const other = visitorOS === 'mac' ? 'win' : 'mac';
+    document.querySelectorAll('[data-download="primary"]').forEach(a => { a.href = links[visitorOS]; a.querySelector('[data-os-label]').textContent = 'Download for ' + NAME[visitorOS]; });
+    document.querySelectorAll('[data-download="other"]').forEach(a => { a.href = links[other]; a.textContent = 'Download for ' + NAME[other]; });
+    document.querySelectorAll('[data-download="install"]').forEach(a => { a.href = links[installOS]; a.querySelector('[data-os-label]').textContent = 'Download for ' + NAME[installOS]; });
+    document.querySelectorAll('.os-switch [data-os]').forEach(b => { const on = b.dataset.os === installOS; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; });
+    document.getElementById('steps-mac').hidden = installOS !== 'mac';
+    document.getElementById('steps-win').hidden = installOS !== 'win';
+  }
+  const tabs = [...document.querySelectorAll('.os-switch [data-os]')];
+  tabs.forEach((b, i) => {
+    b.addEventListener('click', () => { installOS = b.dataset.os; paint(); });
+    b.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault(); const n = tabs[(i + 1) % tabs.length]; installOS = n.dataset.os; paint(); n.focus();
+    });
+  });
+  paint();
+
+  // Show the current version and link straight to each installer when GitHub answers.
   fetch('https://api.github.com/repos/' + REPO + '/releases/latest')
     .then(r => r.ok ? r.json() : null)
     .then(rel => {
       if (!rel) return;
-      const dmg = (rel.assets || []).find(a => /\.dmg$/i.test(a.name));
-      document.querySelectorAll('[data-version]').forEach(el => el.textContent = 'version ' + rel.tag_name.replace(/^v/, ''));
-      if (dmg) document.querySelectorAll('[data-download]').forEach(a => a.href = dmg.browser_download_url);
+      const assets = rel.assets || [];
+      const dmg = assets.find(a => /\.dmg$/i.test(a.name));
+      const exe = assets.find(a => /setup\.exe$/i.test(a.name));
+      if (dmg) links.mac = dmg.browser_download_url;
+      if (exe) links.win = exe.browser_download_url;
+      document.querySelectorAll('[data-version-suffix]').forEach(el => el.textContent = ', version ' + rel.tag_name.replace(/^v/, ''));
+      paint();
     })
     .catch(() => {});
 

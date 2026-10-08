@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keygrid: BPM, key, reverb and delay for any beat</title>
+<meta name="description" content="Drag in a beat and get the BPM to four decimal places, the key, vocal reverb and delay times, and a beat health check. Free for Mac.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Keygrid">
+<meta property="og:description" content="Key, BPM, reverb and delay times, all in one drag and drop. Free for Mac.">
+<link rel="canonical" href="https://keygrid.com/">
+<meta property="og:url" content="https://keygrid.com/">
+<meta property="og:image" content="https://keygrid.com/img/social-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#14111d">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<style>
+@font-face { font-family: "Outfit"; font-weight: 300; font-display: swap; src: url("img/outfit-latin-300-normal.woff2") format("woff2"); }
+@font-face { font-family: "Outfit"; font-weight: 400; font-display: swap; src: url("img/outfit-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Outfit"; font-weight: 500; font-display: swap; src: url("img/outfit-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Figtree"; font-weight: 400; font-display: swap; src: url("img/figtree-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Figtree"; font-weight: 500; font-display: swap; src: url("img/figtree-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Figtree"; font-weight: 600; font-display: swap; src: url("img/figtree-latin-600-normal.woff2") format("woff2"); }
+
+/* Keygrid's own palette: the plum-night dark theme from the app */
+:root {
+  --night: #14111d;
+  --plum: #1c1828;
+  --deep: #100d18;
+  --line: #2c2640;
+  --ink: #ece8f6;
+  --muted: #a39bbd;
+  --lilac: #b39cff;
+  --violet: #7650cc;
+  --key-white: #e9e3f5;
+  --key-lit: #c9b6ff;
+  --key-root: #8a5cf0;
+  --display: "Outfit", "Avenir Next", system-ui, sans-serif;
+  --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --gutter: clamp(20px, 5vw, 64px);
+  --measure: 34rem;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--night); color: var(--ink);
+  font-family: var(--body); font-size: 1.0625rem; line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: var(--lilac); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--lilac); outline-offset: 3px; border-radius: 6px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; line-height: 1.1; text-wrap: balance; letter-spacing: -0.015em; }
+p { margin: 0; }
+.wrap { width: min(1160px, 100%); margin-inline: auto; padding-inline: var(--gutter); }
+
+/* top bar */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 22px; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); font-family: var(--display); font-size: 1.35rem; font-weight: 500; }
+.brand img { width: 36px; height: 36px; }
+.top nav { display: flex; align-items: center; gap: clamp(14px, 3vw, 28px); }
+.top nav a { color: var(--muted); text-decoration: none; font-size: 0.95rem; }
+.top nav a:hover { color: var(--ink); }
+.top nav a.pill { color: var(--night); background: var(--lilac); padding: 7px 16px; border-radius: 99px; font-weight: 600; }
+
+/* hero */
+.hero { position: relative; padding-block: clamp(40px, 8vw, 96px) 0; overflow: hidden; }
+.hero::before {
+  content: ""; position: absolute; inset: -20% -10% auto auto; width: 70vw; height: 70vw; max-width: 900px; max-height: 900px;
+  background: radial-gradient(closest-side, rgba(140, 100, 255, 0.28), transparent); pointer-events: none;
+}
+.hero .wrap { position: relative; }
+.hero h1 { font-size: clamp(2.9rem, 8.4vw, 6.4rem); line-height: 0.98; font-weight: 300; max-width: 11ch; }
+.hero .lede { margin-top: 26px; max-width: var(--measure); font-size: clamp(1.1rem, 1.6vw, 1.3rem); color: var(--muted); }
+.cta { margin-top: 34px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; }
+.button {
+  display: inline-flex; align-items: center; gap: 10px; text-decoration: none;
+  background: var(--lilac); color: #1b1330; font-weight: 600; font-size: 1.05rem;
+  padding: 15px 28px; border-radius: 99px; transition: background .2s, transform .2s;
+}
+.button:hover { background: #c7b6ff; }
+.button:active { transform: translateY(1px); }
+.button svg { width: 18px; height: 18px; }
+.cta small { color: var(--muted); font-size: 0.9rem; line-height: 1.5; }
+.shot-hero { margin-top: clamp(40px, 6vw, 72px); margin-inline: auto; width: min(980px, 100%); }
+.shot-hero img { margin-bottom: clamp(24px, 4vw, 56px); }
+
+/* sections */
+section { padding-block: clamp(72px, 11vw, 140px); }
+.why { background: var(--plum); border-top: 1px solid var(--line); }
+.why .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
+.why h2 { font-size: clamp(2rem, 4.2vw, 3.2rem); line-height: 1.08; }
+.why .copy { display: grid; gap: 1.2em; color: var(--muted); max-width: var(--measure); }
+.why .copy p:first-child { color: var(--ink); font-size: 1.2rem; }
+
+/* the keyboard: the one loud thing on the page */
+.keyband { background: var(--deep); padding-block: clamp(56px, 8vw, 96px); border-block: 1px solid var(--line); }
+.keyband .head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 10px 24px; margin-bottom: 28px; }
+.keyband h2 { font-size: clamp(1.7rem, 3.4vw, 2.6rem); }
+.keyband .head p { color: var(--muted); }
+.keyband .head p strong { color: var(--ink); font-weight: 500; }
+.piano { position: relative; display: flex; height: clamp(150px, 22vw, 240px); user-select: none; -webkit-user-select: none; touch-action: manipulation; }
+.piano button { font: inherit; border: 0; padding: 0; cursor: pointer; transition: filter .08s, transform .08s; }
+.wk { flex: 1 1 0; min-width: 0; background: var(--key-white); border-radius: 0 0 10px 10px; margin-right: 3px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 12px; color: #4d4270; font-size: clamp(0.7rem, 1.2vw, 0.9rem); font-weight: 500; }
+.wk:last-child { margin-right: 0; }
+.bk { position: absolute; top: 0; height: 60%; background: #0c0a12; border-radius: 0 0 7px 7px; z-index: 2; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 9px; color: #fff; font-size: clamp(0.6rem, 1vw, 0.78rem); font-weight: 500; }
+.wk.in { background: var(--key-lit); }
+.bk.in { background: #6d4bc9; }
+.piano .root { background: var(--key-root); color: #fff; }
+.piano .down { filter: brightness(0.82); transform: translateY(2px); }
+.keyband .row { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.ghost { font: inherit; font-size: 0.95rem; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 99px; padding: 9px 18px; cursor: pointer; }
+.ghost:hover { border-color: var(--lilac); }
+.keyband .note { color: var(--muted); font-size: 0.92rem; }
+
+/* features */
+.features .wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(72px, 10vw, 128px); }
+.feature { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+.feature:nth-child(even) .text { order: 2; }
+.feature.wide { grid-template-columns: minmax(0, 1fr); }
+.feature.wide .text { order: 0; max-width: 40rem; }
+.feature.wide .shots { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.feature.wide .shots .panel + .panel { margin-top: 0; }
+.feature h3 { font-size: clamp(1.7rem, 3vw, 2.3rem); line-height: 1.12; }
+.feature .text { display: grid; gap: 16px; max-width: 30rem; }
+.feature .text p { color: var(--muted); }
+.feature ul { margin: 0; padding-left: 1.1em; color: var(--muted); display: grid; gap: 6px; }
+.feature ul strong { color: var(--ink); font-weight: 500; }
+.panel { border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--plum); box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.02); }
+.panel + .panel { margin-top: 14px; }
+.panel { width: 100%; }
+.panel.narrow { max-width: min(460px, 100%); }
+
+/* privacy line */
+.private { text-align: center; padding-block: clamp(64px, 9vw, 112px); background: var(--plum); border-block: 1px solid var(--line); }
+.private p { font-family: var(--display); font-weight: 300; font-size: clamp(1.7rem, 4vw, 2.9rem); line-height: 1.15; max-width: 22ch; margin-inline: auto; }
+
+/* install */
+.install .wrap { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
+.install h2 { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.08; }
+.install .side { display: grid; gap: 22px; justify-items: start; }
+.install .side p { color: var(--muted); max-width: 26rem; }
+.steps { list-style: none; counter-reset: step; margin: 0; padding: 0; display: grid; gap: 22px; }
+.steps li { counter-increment: step; display: grid; grid-template-columns: 44px 1fr; gap: 16px; align-items: start; }
+.steps li::before { content: counter(step); width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); display: grid; place-items: center; font-family: var(--display); font-size: 1.15rem; color: var(--lilac); }
+.steps h3 { font-size: 1.25rem; margin-bottom: 4px; }
+.steps p { color: var(--muted); }
+
+/* footer */
+footer { border-top: 1px solid var(--line); padding-block: 40px 56px; color: var(--muted); font-size: 0.92rem; }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 18px 32px; }
+footer nav { display: flex; flex-wrap: wrap; gap: 10px 24px; }
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--ink); }
+footer .fine { width: 100%; font-size: 0.82rem; color: #7d7598; max-width: 60rem; }
+
+/* one orchestrated moment: the hero settles in on load */
+@media (prefers-reduced-motion: no-preference) {
+  .hero h1, .hero .lede, .hero .cta { animation: rise .8s cubic-bezier(.2, .8, .2, 1) both; }
+  .hero .lede { animation-delay: .08s; }
+  .hero .cta { animation-delay: .16s; }
+  .shot-hero { animation: rise 1s .22s cubic-bezier(.2, .8, .2, 1) both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(18px); } }
+}
+
+@media (max-width: 820px) {
+  .why .wrap, .install .wrap, .feature { grid-template-columns: minmax(0, 1fr); }
+  .feature:nth-child(even) .text { order: 0; }
+  .feature.wide .shots { grid-template-columns: minmax(0, 1fr); }
+  .top nav a:not(.pill) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="wrap top">
+  <a class="brand" href="./"><img src="img/icon-180.png" alt="" width="36" height="36">Keygrid</a>
+  <nav aria-label="Main">
+    <a href="#features">Features</a>
+    <a href="#install">Install</a>
+    <a data-help href="https://github.com/ChrisCollins24/Keygrid/wiki">Help</a>
+    <a class="pill" data-download href="https://github.com/ChrisCollins24/Keygrid/releases/latest">Download</a>
+  </nav>
+</header>
+
+<main>
+  <div class="hero">
+    <div class="wrap">
+      <h1>Drag in a beat. Get everything.</h1>
+      <p class="lede">The BPM to four decimal places, the key and its relative key, vocal reverb and delay times, and a health check on the beat. One drop, a few seconds.</p>
+      <div class="cta">
+        <a class="button" data-download href="https://github.com/ChrisCollins24/Keygrid/releases/latest">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download for Mac
+        </a>
+        <small>Free. <span data-version>Latest version</span>.<br>Apple Silicon and Intel, macOS 11 or newer.</small>
+      </div>
+      <div class="shot-hero">
+        <img src="img/hero.webp" width="1290" height="1264" alt="Keygrid showing a beat at 142.0004 BPM in F minor, with its relative key A♭ major and the F minor scale lit up on a piano" fetchpriority="high">
+      </div>
+    </div>
+  </div>
+
+  <section class="why">
+    <div class="wrap">
+      <h2>Less tab-hopping. More time with the music.</h2>
+      <div class="copy">
+        <p>Every artist starts somewhere, and for most of us that's a bedroom setup with little or no budget.</p>
+        <p>Before a single vocal is recorded, there's a checklist: find the BPM, identify the key, work out reverb and delay times that fit the tempo. That usually means bouncing between several websites and apps, each answering one question. It takes time, breaks focus, and pulls energy away from the music, the artist and the moment in the session.</p>
+        <p>Keygrid puts all of it in one place, for engineers and artists who are just getting started and the ones who've been at it for years.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="keyband" aria-labelledby="keys-title">
+    <div class="wrap">
+      <div class="head">
+        <h2 id="keys-title">Hear the key before you record</h2>
+        <p>This beat is in <strong>F minor</strong>. Tap a key.</p>
+      </div>
+      <div class="piano" id="piano" role="group" aria-label="Piano showing the F minor scale"></div>
+      <div class="row">
+        <button class="ghost" type="button" id="playScale">Play the scale</button>
+        <button class="ghost" type="button" id="playChord">Play the chord</button>
+        <span class="note">Keygrid lights up the notes of every beat you load.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <div class="wrap">
+      <article class="feature">
+        <div class="text">
+          <h3>BPM you can trust to the fourth decimal</h3>
+          <p>Keygrid finds every beat in the track and fits them all at once, so the tempo holds from the first bar to the last. Switch to half or double time with one click, and play it back with a click track to check by ear.</p>
+        </div>
+        <img class="panel narrow" src="img/tempo.webp" width="760" height="408" loading="lazy" alt="Tempo reading of 142.0004 BPM with a steady grid and half, normal and double time buttons">
+      </article>
+
+      <article class="feature">
+        <div class="text">
+          <h3>The key, the relative key and every note</h3>
+          <p>See the key with its Open Key code, the relative key that shares its notes, and a piano lit up in the right scale. Copy the notes straight into Auto-Tune or Melodyne.</p>
+        </div>
+        <img class="panel" src="img/key.webp" width="1100" height="363" loading="lazy" alt="Key reading of F minor, strong match, with its relative key A♭ major">
+      </article>
+
+      <article class="feature wide">
+        <div class="text">
+          <h3>Vocal reverb and delay, timed to the beat</h3>
+          <p>Four ValhallaVintageVerb settings, from a tight ambience to a full concert hall, with pre-delay and decay calculated so the tail fades out on the beat. Delay times for every note value, straight, dotted and triplet.</p>
+        </div>
+        <div class="shots">
+          <img class="panel" src="img/reverb.webp" width="1200" height="372" loading="lazy" alt="Reverb settings table with pre-delay, decay, mix, size and filter values for four reverb modes">
+          <img class="panel" src="img/delay.webp" width="1200" height="409" loading="lazy" alt="Delay times in milliseconds for half to thirty-second notes">
+        </div>
+      </article>
+
+      <article class="feature">
+        <div class="text">
+          <h3>Know if a beat is too hot before you hit record</h3>
+          <ul>
+            <li><strong>Peak and clipping</strong> show whether there's any headroom left.</li>
+            <li><strong>Loudness</strong> in LUFS tells you if the beat is already mastered.</li>
+            <li><strong>Dynamics</strong> flag beats that have been squashed flat.</li>
+            <li><strong>Mono check</strong> catches parts that disappear on phone speakers.</li>
+          </ul>
+        </div>
+        <img class="panel narrow" src="img/health.webp" width="900" height="445" loading="lazy" alt="Beat health readings for peak, clipping, loudness, dynamics and mono compatibility">
+      </article>
+
+      <article class="feature">
+        <div class="text">
+          <h3>Every session, ready for the invoice</h3>
+          <p>Keygrid keeps a searchable list of every beat you've analyzed with its tempo, key and date. Copy it into a spreadsheet when it's time to bill, or keep Keygrid floating on top of your DAW while you work.</p>
+        </div>
+        <img class="panel" src="img/previous.webp" width="1100" height="746" loading="lazy" alt="List of previous songs with tempo, key and date">
+      </article>
+    </div>
+  </section>
+
+  <div class="private">
+    <div class="wrap"><p>Your beats never leave your computer. No accounts, no uploads, no tracking.</p></div>
+  </div>
+
+  <section class="install" id="install">
+    <div class="wrap">
+      <div class="side">
+        <h2>Up and running in a minute</h2>
+        <p>Keygrid is free and works on any Apple Silicon or Intel Mac running macOS 11 or newer.</p>
+        <a class="button" data-download href="https://github.com/ChrisCollins24/Keygrid/releases/latest">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download for Mac
+        </a>
+      </div>
+      <ol class="steps">
+        <li><div><h3>Download</h3><p>Click Download for Mac and open the file once it finishes.</p></div></li>
+        <li><div><h3>Drag Keygrid into Applications</h3><p>The window that opens shows you where to drag it.</p></div></li>
+        <li><div><h3>Allow it the first time</h3><p>Open Keygrid once, then go to System Settings, Privacy &amp; Security, and click Open Anyway. After that it opens like any other app. <a data-help href="https://github.com/ChrisCollins24/Keygrid/wiki/Installing-and-Updating">Step-by-step help</a></p></div></li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Keygrid</span>
+    <nav aria-label="Footer">
+      <a data-help href="https://github.com/ChrisCollins24/Keygrid/wiki">Help</a>
+      <a data-help href="https://github.com/ChrisCollins24/Keygrid/wiki/FAQ">FAQ</a>
+      <a data-repo-link="/blob/main/CHANGELOG.md" href="https://github.com/ChrisCollins24/Keygrid/blob/main/CHANGELOG.md">What's new</a>
+      <a href="mailto:keygridapp@gmail.com">keygridapp@gmail.com</a>
+    </nav>
+    <p class="fine">© 2026 Christian Collins. All rights reserved. Keygrid is not affiliated with or endorsed by Valhalla DSP, Avid, Antares, Celemony or Mixed In Key; product names are trademarks of their respective owners.</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+  // Where Keygrid lives on GitHub. Change this one line if the repository moves.
+  const REPO = 'ChrisCollins24/Keygrid';
+  const GH = 'https://github.com/' + REPO;
+  document.querySelectorAll('[data-download]').forEach(a => a.href = GH + '/releases/latest');
+  document.querySelectorAll('[data-help]').forEach(a => a.href = a.href.replace(/https:\/\/github\.com\/[^/]+\/[^/]+/, GH));
+  document.querySelectorAll('[data-repo-link]').forEach(a => a.href = GH + a.dataset.repoLink);
+
+  // Show the current version and link straight to the .dmg when GitHub answers.
+  fetch('https://api.github.com/repos/' + REPO + '/releases/latest')
+    .then(r => r.ok ? r.json() : null)
+    .then(rel => {
+      if (!rel) return;
+      const dmg = (rel.assets || []).find(a => /\.dmg$/i.test(a.name));
+      document.querySelectorAll('[data-version]').forEach(el => el.textContent = 'Version ' + rel.tag_name.replace(/^v/, ''));
+      if (dmg) document.querySelectorAll('[data-download]').forEach(a => a.href = dmg.browser_download_url);
+    })
+    .catch(() => {});
+
+  // ---- the playable keyboard (F minor, two octaves from C3) ----
+  const NAMES = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭', 'A', 'B♭', 'B'];
+  const TONIC = 5, SCALE = [0, 2, 3, 5, 7, 8, 10];
+  const inKey = new Set(SCALE.map(i => (TONIC + i) % 12));
+  const BLACK = { 1: 0, 3: 1, 6: 3, 8: 4, 10: 5 };
+  const BASE = 48, piano = document.getElementById('piano');
+  // two octaves on wide screens, one on phones so the keys stay big enough to tap
+  function buildPiano() {
+    const octaves = window.innerWidth < 640 ? 1 : 2, whites = octaves * 7;
+    let html = '';
+    for (let o = 0; o < octaves; o++) for (let pc = 0; pc < 12; pc++) {
+      const midi = BASE + o * 12 + pc, lit = inKey.has(pc), root = pc === TONIC;
+      const cls = (lit ? ' in' : '') + (root ? ' root' : '');
+      const label = lit ? NAMES[pc] : (pc === 0 ? 'C' + (3 + o) : '');
+      const aria = NAMES[pc] + (3 + o) + (root ? ', root of F minor' : lit ? ', in F minor' : '');
+      if (pc in BLACK) {
+        const left = ((o * 7 + BLACK[pc] + 1) / whites) * 100, w = 60 / whites;
+        html += `<button type="button" class="bk${cls}" style="left:calc(${left}% - ${w / 2}%);width:${w}%" data-midi="${midi}" aria-label="${aria}">${lit ? NAMES[pc] : ''}</button>`;
+      } else {
+        html += `<button type="button" class="wk${cls}" data-midi="${midi}" aria-label="${aria}">${label}</button>`;
+      }
+    }
+    piano.innerHTML = html;
+    piano.dataset.octaves = octaves;
+  }
+  buildPiano();
+  window.addEventListener('resize', () => { if (Number(piano.dataset.octaves) !== (window.innerWidth < 640 ? 1 : 2)) buildPiano(); });
+
+  let ctx = null;
+  const audio = () => (ctx = ctx || new (window.AudioContext || window.webkitAudioContext)());
+  let running = [];
+  function note(midi, when, dur) {
+    const c = audio(), t0 = when || c.currentTime, f = 440 * Math.pow(2, (midi - 69) / 12);
+    const out = c.createGain(), lp = c.createBiquadFilter();
+    lp.type = 'lowpass'; lp.frequency.value = 2400;
+    out.gain.setValueAtTime(0, t0);
+    out.gain.linearRampToValueAtTime(0.22, t0 + 0.008);
+    out.gain.exponentialRampToValueAtTime(0.08, t0 + 0.25);
+    out.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    const oscs = [[1, 'triangle', 1], [2, 'sine', 0.35], [3, 'sine', 0.12]].map(([h, type, g]) => {
+      const o = c.createOscillator(), og = c.createGain();
+      o.type = type; o.frequency.value = f * h; og.gain.value = g;
+      o.connect(og).connect(lp); o.start(t0); o.stop(t0 + dur + 0.05); return o;
+    });
+    lp.connect(out).connect(c.destination);
+    return () => { const n = c.currentTime; out.gain.cancelScheduledValues(n); out.gain.setTargetAtTime(0, n, 0.01); oscs.forEach(o => { try { o.stop(n + 0.06); } catch (e) {} }); };
+  }
+  const timers = [];
+  function flash(midi, delay, hold) {
+    const k = piano.querySelector('[data-midi="' + midi + '"]'); if (!k) return;
+    timers.push(setTimeout(() => k.classList.add('down'), delay), setTimeout(() => k.classList.remove('down'), delay + hold));
+  }
+  function stopRun() { running.forEach(s => s()); running = []; timers.splice(0).forEach(clearTimeout); piano.querySelectorAll('.down').forEach(k => k.classList.remove('down')); }
+  piano.addEventListener('pointerdown', async e => {
+    const k = e.target.closest('[data-midi]'); if (!k) return;
+    e.preventDefault(); await audio().resume();
+    const m = Number(k.dataset.midi); note(m, 0, 1.4); flash(m, 0, 180);
+  });
+  piano.addEventListener('keydown', async e => {
+    const k = e.target.closest('[data-midi]'); if (!k || (e.key !== 'Enter' && e.key !== ' ')) return;
+    e.preventDefault(); await audio().resume();
+    const m = Number(k.dataset.midi); note(m, 0, 1.4); flash(m, 0, 180);
+  });
+  document.getElementById('playScale').addEventListener('click', async () => {
+    const c = audio(); await c.resume(); stopRun();
+    [...SCALE, 12].map(i => BASE + TONIC + i).forEach((m, i) => { running.push(note(m, c.currentTime + 0.05 + i * 0.3, 0.6)); flash(m, 50 + i * 300, 260); });
+  });
+  document.getElementById('playChord').addEventListener('click', async () => {
+    const c = audio(); await c.resume(); stopRun();
+    [0, 3, 7, 12].map(i => BASE + TONIC + i).forEach(m => { running.push(note(m, c.currentTime + 0.05, 2.2)); flash(m, 50, 600); });
+  });
+})();
+</script>
+</body>
+</html>

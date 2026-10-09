@@ -28,11 +28,11 @@ const faces = [
 ].map(([family, weight, file]) => `@font-face { font-family: "${family}"; font-style: normal; font-weight: ${weight}; font-display: swap; src: url("../img/${file}.woff2") format("woff2"); }`).join('\n');
 page = page.replace('<style>', '<style>\n' + faces + '\n');
 
-// The Keygrid name links back to the website, and a button offers the Mac app.
+// The Keygrid name links back to the website, and a button links to the Mac and Windows downloads.
 page = page.replace('<h1>Key<span>grid</span></h1>', '<h1><a class="home" href="../" title="Keygrid website">Key<span>grid</span></a></h1>');
 page = page.replace(
   '<button class="btn" id="pinBtn"',
-  '<a class="btn" href="../#install" id="macApp" title="Download the Mac app">Mac app</a>\n    <button class="btn" id="pinBtn"'
+  '<a class="btn" href="../#install" id="download" title="Download Keygrid for Mac or Windows">Download</a>\n    <button class="btn" id="pinBtn"'
 );
 page = page.replace('</style>', '.brand h1 a.home { color: inherit; text-decoration: none; }\na.btn { text-decoration: none; display: inline-flex; align-items: center; }\n</style>');
 

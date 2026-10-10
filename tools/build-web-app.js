@@ -36,6 +36,12 @@ page = page.replace(
 );
 page = page.replace('</style>', '.brand h1 a.home { color: inherit; text-decoration: none; }\na.btn { text-decoration: none; display: inline-flex; align-items: center; }\n</style>');
 
+// Visit counts (GoatCounter, no cookies), plus one event each time a beat finishes analyzing.
+// Only the event name is sent: never the file name, the results or the audio.
+const analyzed = "      saveHistory(t);\n      if (t.id !== currentId) dropTrack(t);";
+if (!page.includes(analyzed)) throw new Error('analysis hook not found in page.template.html');
+page = page.replace(analyzed, analyzed.replace('saveHistory(t);', "saveHistory(t);\n      try { window.goatcounter && window.goatcounter.count({ path: 'beat-analyzed', title: 'Beat analyzed (web app)', event: true }); } catch (e) {}"));
+
 const head = `<!doctype html>
 <html lang="en">
 <head>
@@ -49,6 +55,7 @@ const head = `<!doctype html>
 <link rel="icon" type="image/png" href="../img/favicon.png">
 <link rel="apple-touch-icon" href="../img/icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
+<script data-goatcounter="https://keygrid.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <style>:root{color-scheme:light dark}body{margin:0;font:14px system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>

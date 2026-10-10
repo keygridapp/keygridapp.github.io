@@ -11,6 +11,7 @@
 <link rel="icon" type="image/png" href="../img/favicon.png">
 <link rel="apple-touch-icon" href="../img/icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
+<script data-goatcounter="https://keygrid.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <style>:root{color-scheme:light dark}body{margin:0;font:14px system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -1399,6 +1400,7 @@ self.onmessage = e => {
       if (d.samples) { t.samples = d.samples; t.sr = d.sr; }
       render(t);
       saveHistory(t);
+      try { window.goatcounter && window.goatcounter.count({ path: 'beat-analyzed', title: 'Beat analyzed (web app)', event: true }); } catch (e) {}
       if (t.id !== currentId) dropTrack(t);
     }
     busy = false; pump();

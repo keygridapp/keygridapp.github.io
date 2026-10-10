@@ -178,6 +178,7 @@ footer .fine { width: 100%; font-size: 0.82rem; color: #7d7598; max-width: 60rem
   .top nav a:not(.pill) { display: none; }
 }
 </style>
+<script data-goatcounter="https://keygrid.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 
@@ -331,6 +332,7 @@ footer .fine { width: 100%; font-size: 0.82rem; color: #7d7598; max-width: 60rem
       <a data-repo-link="/blob/main/CHANGELOG.md" href="https://github.com/ChrisCollins24/Keygrid/blob/main/CHANGELOG.md">What's new</a>
       <a href="mailto:keygridapp@gmail.com">keygridapp@gmail.com</a>
     </nav>
+    <p class="fine">This site counts visits with GoatCounter, which uses no cookies and doesn't track you. Your audio is never sent anywhere.</p>
     <p class="fine">© 2026 Christian Collins. All rights reserved. Keygrid is not affiliated with or endorsed by Valhalla DSP, Avid, Antares, Celemony or Mixed In Key; product names are trademarks of their respective owners.</p>
   </div>
 </footer>
@@ -368,6 +370,12 @@ footer .fine { width: 100%; font-size: 0.82rem; color: #7d7598; max-width: 60rem
     });
   });
   paint();
+
+  // Count download clicks (Mac or Windows) in the site's visitor stats.
+  document.querySelectorAll('[data-download]').forEach(a => a.addEventListener('click', () => {
+    const os = /\.dmg$/i.test(a.href) ? 'mac' : /\.exe$/i.test(a.href) ? 'windows' : 'releases-page';
+    try { window.goatcounter && window.goatcounter.count({ path: 'download-' + os, title: 'Download: ' + os, event: true }); } catch (e) {}
+  }));
 
   // Show the current version and link straight to each installer when GitHub answers.
   fetch('https://api.github.com/repos/' + REPO + '/releases/latest')
